@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exeption.FilmNotFound;
 import ru.yandex.practicum.filmorate.exeption.UserNotFound;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.service.DirectorService;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.LikesService;
 
@@ -107,6 +108,14 @@ public class FilmController {
     public ResponseEntity<String> deleteLikeFromFilm(@PathVariable long filmId, @PathVariable long userId) throws UserNotFound, FilmNotFound {
         likesService.deleteLikeFromFilm(filmId, userId);
         return ResponseEntity.ok("Like delete");
+    }
+
+    /**
+     * Выводим все Film от заданного Director по годам или лайкам
+     */
+    @GetMapping("/director/{directorId}")
+    public List<Film> getAllFilmsByDirectorSortByYearOrLikes(@PathVariable int directorId, @RequestParam String sortBy) {
+        return filmService.getAllFilmsByDirector(directorId, sortBy);
     }
 
 }
