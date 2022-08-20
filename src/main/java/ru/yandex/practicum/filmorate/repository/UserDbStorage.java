@@ -95,8 +95,28 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void deleteUser(long id) throws UserNotFound {
+        /**
+         * Добавленный код
+         *         String sqlLikes = "DELETE FROM LIKES WHERE USER_ID = ?";
+         *         String sqlEvents = "DELETE FROM EVENTS WHERE USER_ID = ?";
+         *         String sqlFriends = "DELETE FROM FRIENDS WHERE USER_ID = ?";
+         *         String sqlFiendsAsFriendId = "DELETE FROM FRIENDS WHERE FRIEND_ID = ?";
+         *
+         *          jdbcTemplate.update(sqlFriends, id);
+         *         jdbcTemplate.update(sqlFiendsAsFriendId, id);
+         *         jdbcTemplate.update(sqlLikes, id);
+         *         jdbcTemplate.update(sqlEvents, id);
+         * */
+        String sqlLikes = "DELETE FROM LIKES WHERE USER_ID = ?";
+        String sqlEvents = "DELETE FROM EVENTS WHERE USER_ID = ?";
+        String sqlFriends = "DELETE FROM FRIENDS WHERE USER_ID = ?";
+        String sqlFiendsAsFriendId = "DELETE FROM FRIENDS WHERE FRIEND_ID = ?";
         String sql = "DELETE FROM USERS WHERE ID = ?";
+
+        jdbcTemplate.update(sqlFriends, id);
+        jdbcTemplate.update(sqlFiendsAsFriendId, id);
+        jdbcTemplate.update(sqlLikes, id);
+        jdbcTemplate.update(sqlEvents, id);
         jdbcTemplate.update(sql, id);
     }
-
 }

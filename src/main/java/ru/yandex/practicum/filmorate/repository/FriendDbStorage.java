@@ -30,11 +30,15 @@ public class FriendDbStorage implements FriendStorage {
     }
 
     public void deleteFriend(long userId, long friendId) throws UserNotFound {
+        userService.getUserById(userId);
+        userService.getUserById(friendId);
         String sql = "DELETE FROM FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?";
         jdbcTemplate.update(sql, userId, friendId);
+        jdbcTemplate.update(sql, friendId, userId);
     }
 
     public List<User> getAllFriends(long id) throws UserNotFound {
+        userService.getUserById(id);
         String sqlFriend = "SELECT * FROM USERS " +
                 "LEFT JOIN FRIENDS ON USERS.ID=FRIENDS.FRIEND_ID " +
                 "WHERE FRIENDS.USER_ID = ?";
@@ -42,6 +46,8 @@ public class FriendDbStorage implements FriendStorage {
     }
 
     public List<User> getAllCommonFriends(long userId, long otherUserId) throws UserNotFound {
+        userService.getUserById(userId);
+        userService.getUserById(otherUserId);
         String sqlFriend = "SELECT * FROM " +
                 "(SELECT * FROM USERS LEFT JOIN FRIENDS ON USERS.ID=FRIENDS.FRIEND_ID WHERE FRIENDS.USER_ID = ?) t1 " +
                 "JOIN " +

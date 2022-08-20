@@ -5,8 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.enums.EventType;
+import ru.yandex.practicum.filmorate.enums.Operation;
 import ru.yandex.practicum.filmorate.exeption.UserNotFound;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.FriendService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -21,6 +25,7 @@ public class UserController {
 
     private final UserService userService;
     private final FriendService friendService;
+    private final EventService eventService;
 
     /**
      * Добавляем нового User
@@ -71,6 +76,7 @@ public class UserController {
     @PutMapping("/{id}/friends/{friendId}")
     public ResponseEntity<User> addFriend(@PathVariable long id, @PathVariable long friendId) throws UserNotFound {
         friendService.addFriend(id, friendId);
+        eventService.addEvent(id, EventType.FRIEND, Operation.ADD, friendId);
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
@@ -80,6 +86,7 @@ public class UserController {
     @DeleteMapping("/{id}/friends/{friendId}")
     public ResponseEntity<String> deleteFriend(@PathVariable long id, @PathVariable long friendId) throws UserNotFound {
         friendService.deleteFriend(friendId, id);
+        eventService.addEvent(id, EventType.FRIEND, Operation.REMOVE, friendId);
         return ResponseEntity.ok("Friend has been deleted");
     }
 
@@ -97,6 +104,11 @@ public class UserController {
     @GetMapping("/{userId}/friends/common/{friendId}")
     public ResponseEntity<List<User>> getAllCommonFriends(@PathVariable long userId, @PathVariable long friendId) throws UserNotFound {
         return new ResponseEntity<>(friendService.getAllCommonFriends(userId, friendId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/feed")
+    public List<Event> getAllEvents(@PathVariable long id) {
+        return eventService.getAllEvents(id);
     }
 
 }
