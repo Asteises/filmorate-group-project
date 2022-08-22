@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(of = "id") // Объект определяется только по полю id
+@EqualsAndHashCode(of = "id")// Объект определяется только по полю id
 public class Director {
 
     private int id;

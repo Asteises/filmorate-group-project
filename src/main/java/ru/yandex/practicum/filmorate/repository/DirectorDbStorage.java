@@ -60,7 +60,6 @@ public class DirectorDbStorage implements DirectorStorage {
         } catch (EmptyResultDataAccessException e) {
             throw new DirectorNotFound("");
         }
-
     }
 
     @Override
@@ -74,11 +73,6 @@ public class DirectorDbStorage implements DirectorStorage {
         String sql = "SELECT * FROM DIRECTORS WHERE ID IN " +
                 "(SELECT DIRECTOR_ID FROM FILMS_DIRECTORS WHERE FILM_ID = ?)";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Director.class), id);
-
-    public List<Director> getDirectorsByFilmId(long id) throws FilmNotFound {
-        String sql = "SELECT * FROM DIRECTORS WHERE ID IN " +
-                "(SELECT DIRECTOR_ID FROM FILMS_DIRECTORS WHERE FILM_ID = ?)";
-        return jdbcTemplate.query(sql, new DirectorRowMapper(), id);
     }
 
 }

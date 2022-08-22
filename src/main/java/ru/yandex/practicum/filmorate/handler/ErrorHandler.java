@@ -15,7 +15,6 @@ public class ErrorHandler {
             GenreNotFound.class,
             DirectorNotFound.class,
             ReviewNotFound.class})
-
     public ResponseEntity<String> runtimeHandler(final RuntimeException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
     }
