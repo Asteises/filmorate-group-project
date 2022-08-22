@@ -13,7 +13,9 @@ public class ErrorHandler {
             FilmNotFound.class,
             MpaNotFound.class,
             GenreNotFound.class,
-            DirectorNotFound.class})
+            DirectorNotFound.class,
+            ReviewNotFound.class})
+
     public ResponseEntity<String> runtimeHandler(final RuntimeException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
     }

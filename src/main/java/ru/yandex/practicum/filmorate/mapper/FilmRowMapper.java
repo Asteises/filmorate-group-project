@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.repository.DirectorDbStorage;
@@ -13,6 +14,7 @@ import ru.yandex.practicum.filmorate.repository.MpaDbStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 @Data
@@ -24,9 +26,6 @@ public class FilmRowMapper implements RowMapper<Film> {
     private final LikesDbStorage likesDbStorage;
     private final DirectorDbStorage directorDbStorage;
 
-    /**
-     * Получаем Film из строки базы данных
-     */
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
         Film film = new Film();
