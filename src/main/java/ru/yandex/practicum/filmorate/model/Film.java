@@ -33,5 +33,6 @@ public class Film {
     @Min(1)
     private int duration;
     private Integer rate;
+    private List<Director> directors = new ArrayList<>();
 
 }
