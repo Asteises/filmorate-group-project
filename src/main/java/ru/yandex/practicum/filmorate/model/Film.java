@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id") // Объект определяется только по полю id
 public class Film {
 
     private long id;
@@ -33,5 +33,6 @@ public class Film {
     @Min(1)
     private int duration;
     private Integer rate;
+    private List<Director> directors = new ArrayList<>();
 
 }

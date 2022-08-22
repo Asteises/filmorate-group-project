@@ -19,6 +19,7 @@ public class MpaDbStorage implements MpaStorage {
 
     public final JdbcTemplate jdbcTemplate;
 
+    @Override
     public Mpa getMpaById(int id) throws MpaNotFound {
         try {
             String sql = "SELECT * FROM MPA WHERE ID = ?";
@@ -28,6 +29,7 @@ public class MpaDbStorage implements MpaStorage {
         }
     }
 
+    @Override
     public List<Mpa> getAllMpa() {
         String sql = "SELECT * FROM MPA";
         return jdbcTemplate.query(sql, new MpaRowMapper());

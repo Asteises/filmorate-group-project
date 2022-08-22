@@ -11,4 +11,6 @@ public interface LikesStorage {
 
     Integer getLikesCount(long id);
 
+    Integer getUsefulCount(long reviewId);
+
 }
