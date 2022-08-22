@@ -319,4 +319,17 @@ public class FilmDbStorage implements FilmStorage {
         return films;
     }
 
+    @Override
+    public List<Film> getRecommendations(long userId) {
+        String sql = "SELECT F.ID, F.NAME, MPA.ID, MPA.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION " +
+                "FROM LIKES AS L1 " +
+                "JOIN LIKES AS L2 ON L2.FILM_ID = L1.FILM_ID AND L1.USER_ID = ? " +
+                "JOIN LIKES AS L3 ON L3.USER_ID = L2.USER_ID AND L3.USER_ID != ? AND L3.FILM_ID != L1.FILM_ID " +
+                "JOIN FILMS AS F ON F.ID = L3.FILM_ID " +
+                "JOIN MPA ON F.MPA_ID = MPA.ID " +
+                "GROUP BY L3.FILM_ID ORDER BY COUNT(*) DESC LIMIT ?";
+
+        return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
+                likesDbStorage, directorDbStorage), userId, userId, 5);
+    }
 }

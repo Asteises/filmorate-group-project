@@ -47,7 +47,7 @@ public class FilmTest {
     @Test
     public void validateFilmReleaseDateTest() {
         Film film = new Film();
-        film.setReleaseDate(LocalDate.of(1984, 12, 1));
+        film.setReleaseDate(LocalDate.of(1894, 12, 1));
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
 
         Assertions.assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("DateAfter.invalid")));

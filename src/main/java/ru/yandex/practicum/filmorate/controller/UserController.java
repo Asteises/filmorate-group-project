@@ -7,8 +7,10 @@ import ru.yandex.practicum.filmorate.enums.EventType;
 import ru.yandex.practicum.filmorate.enums.Operation;
 import ru.yandex.practicum.filmorate.exeption.UserNotFound;
 import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.EventService;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.FriendService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -24,6 +26,7 @@ public class UserController {
     private final UserService userService;
     private final FriendService friendService;
     private final EventService eventService;
+    private final FilmService filmService;
 
     /**
      * Добавляем нового User
@@ -109,4 +112,11 @@ public class UserController {
         return eventService.getAllEvents(id);
     }
 
+    /**
+     * Возвращаем рекомендации по фильмам для просмотра
+     */
+    @GetMapping("/{userId}/recommendations")
+    public List<Film> getRecommendations(@PathVariable long userId) {
+        return filmService.getRecommendations(userId);
+    }
 }
