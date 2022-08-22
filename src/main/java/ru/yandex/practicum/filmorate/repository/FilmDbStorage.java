@@ -70,9 +70,7 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> getAllFilms() {
         String sql1 = "SELECT * FROM FILMS " +
                 "JOIN MPA ON FILMS.MPA_ID=MPA.ID";
-                
-        return jdbcTemplate.query(sql1,
-                new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage));
+        return jdbcTemplate.query(sql1, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage));
     }
 
     @Override
@@ -81,9 +79,8 @@ public class FilmDbStorage implements FilmStorage {
             String sql = "SELECT * FROM FILMS " +
                     "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
                     "WHERE FILMS.ID = ?";
-
-            return jdbcTemplate.queryForObject(sql,
-                    new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), id);
+            return jdbcTemplate.queryForObject(sql, new FilmRowMapper(genreDbStorage,
+                    mpaDbStorage, likesDbStorage, directorDbStorage), id);
         } catch (EmptyResultDataAccessException e) {
             throw new FilmNotFound("");
         }
@@ -117,7 +114,6 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public void deleteFilm(long filmId) throws FilmNotFound {
         try {
-            getFilmById(filmId);
             String sql = "DELETE FROM FILMS WHERE ID = ?";
             String sqlDirector = "DELETE FROM FILMS_DIRECTORS WHERE FILM_ID = ?";
             String sqlGenre = "DELETE FROM FILMS_GENRES WHERE FILM_ID = ?";
@@ -190,7 +186,7 @@ public class FilmDbStorage implements FilmStorage {
                     likesDbStorage, directorDbStorage), count, firstBoundOfDate, secondBoundOfDate, genreId);
         } else {
             return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
-                    likesDbStorage, directorDbStorage), 10, firstBoundOfDate, secondBoundOfDate, genreId); 
+                    likesDbStorage, directorDbStorage), 10, firstBoundOfDate, secondBoundOfDate, genreId);
         }
     }
 
@@ -208,7 +204,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void setFilmGenres(long filmId, List<Genre> genres) throws FilmNotFound {
-        getFilmById(filmId);
         String sqlCheck = "SELECT COUNT(*) FROM FILMS_GENRES WHERE FILM_ID = ?";
         Integer check = jdbcTemplate.queryForObject(sqlCheck, Integer.class, filmId);
         if (check == 0) {
@@ -263,23 +258,12 @@ public class FilmDbStorage implements FilmStorage {
             } else if (sortBy.equals("likes")) {
                 String sql = "SELECT * FROM FILMS " +
                         "JOIN ((SELECT FILM_ID FROM FILMS_DIRECTORS WHERE DIRECTOR_ID = ?)) FD ON FILMS.ID=FD.FILM_ID " +
-                        "RIGHT JOIN (SELECT FILM_ID FROM FILMS_DIRECTORS " +
-                        "WHERE DIRECTOR_ID = ?) FD ON FILMS.ID=FD.FILM_ID " +
-                        "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
-                        "ORDER BY RELEASE_DATE";
-                return jdbcTemplate.query(sql,
-                        new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), directorId);
-            } else if (sortBy.equals("likes")) {
-                String sql = "SELECT * FROM FILMS " +
-                        "JOIN ((SELECT FILM_ID FROM FILMS_DIRECTORS " +
-                        "WHERE DIRECTOR_ID = ?)) FD ON FILMS.ID=FD.FILM_ID " +
                         "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
                         "LEFT JOIN LIKES l ON FILMS.ID = l.FILM_ID " +
                         "GROUP BY FILMS.ID " +
                         "ORDER BY COUNT(USER_ID) DESC";
-
-                return jdbcTemplate.query(sql,
-                        new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage, directorDbStorage), directorId);
+                return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
+                        likesDbStorage, directorDbStorage), directorId);
             }
         } catch (EmptyResultDataAccessException e) {
             throw new DirectorNotFound("");
@@ -334,5 +318,5 @@ public class FilmDbStorage implements FilmStorage {
         films.sort(filmComparator);
         return films;
     }
-    
+
 }
