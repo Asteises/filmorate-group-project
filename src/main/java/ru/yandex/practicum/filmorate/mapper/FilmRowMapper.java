@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.repository.DirectorDbStorage;
 import ru.yandex.practicum.filmorate.repository.GenreDbStorage;
 import ru.yandex.practicum.filmorate.repository.LikesDbStorage;
 import ru.yandex.practicum.filmorate.repository.MpaDbStorage;
@@ -21,6 +22,7 @@ public class FilmRowMapper implements RowMapper<Film> {
     private final GenreDbStorage genreDbStorage;
     private final MpaDbStorage mpaDbStorage;
     private final LikesDbStorage likesDbStorage;
+    private final DirectorDbStorage directorDbStorage;
 
     /**
      * Получаем Film из строки базы данных
@@ -39,6 +41,7 @@ public class FilmRowMapper implements RowMapper<Film> {
         film.setReleaseDate(rs.getDate("RELEASE_DATE").toLocalDate());
         film.setRate(likesDbStorage.getLikesCount(rs.getLong("ID")));
         film.setGenres(genreDbStorage.getGenresByFilmId(film.getId()));
+        film.setDirectors(directorDbStorage.getDirectorsByFilmId(film.getId()));
         return film;
     }
 
