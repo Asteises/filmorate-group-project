@@ -18,41 +18,31 @@ public class DirectorsController {
 
     private final DirectorService directorService;
 
-    /**
-     * Создание режиссёра
-     */
+  
     @PostMapping
     public Director addDirector(@Valid @RequestBody Director director) throws DirectorNotFound {
         return directorService.addDirector(director);
     }
 
-    /**
-     * Список всех режиссёров
-     */
+
     @GetMapping
     public List<Director> getAllDirectors() {
         return directorService.getAllDirectors();
     }
 
-    /**
-     * Получение режиссёра по id
-     */
+
     @GetMapping("/{id}")
     public Director getDirectorById(@PathVariable int id) throws DirectorNotFound {
         return directorService.getDirectorById(id);
     }
 
-    /**
-     * Изменение режиссёра
-     */
+
     @PutMapping
     public Director updateDirector(@Valid @RequestBody Director director) throws DirectorNotFound {
         return directorService.updateDirector(director);
     }
 
-    /**
-     * Удаление режиссёра
-     */
+
     @DeleteMapping("/{id}")
     public void deleteDirectorById(@PathVariable int id) throws DirectorNotFound {
         directorService.deleteDirectorById(id);

@@ -136,4 +136,12 @@ public class FilmController {
         return filmService.getSearchFilms(query, by);
     }
 
+    /**
+     * Выводим все Film от заданного Director по годам или лайкам
+     */
+    @GetMapping("/director/{directorId}")
+    public List<Film> getAllFilmsByDirectorSortByYearOrLikes(@PathVariable int directorId, @RequestParam String sortBy) {
+        return filmService.getAllFilmsByDirector(directorId, sortBy);
+    }
+
 }
