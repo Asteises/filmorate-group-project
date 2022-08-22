@@ -20,6 +20,7 @@ public class GenreDbStorage implements GenreStorage {
 
     public final JdbcTemplate jdbcTemplate;
 
+    @Override
     public Genre getGenreById(long id) throws GenreNotFound {
         try {
             String sql = "SELECT * FROM GENRE WHERE ID = ?";
@@ -29,11 +30,13 @@ public class GenreDbStorage implements GenreStorage {
         }
     }
 
+    @Override
     public List<Genre> getAllGenres() {
         String sql = "SELECT * FROM GENRE";
         return jdbcTemplate.query(sql, new GenreRowMapper());
     }
 
+    @Override
     public List<Genre> getGenresByFilmId(long id) {
         String sql = "SELECT * FROM GENRE WHERE ID IN " +
                 "(SELECT GENRE_ID FROM FILMS_GENRES WHERE FILM_ID = ?)";

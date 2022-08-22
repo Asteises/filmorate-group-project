@@ -8,9 +8,6 @@ import java.sql.SQLException;
 
 public class UserRowMapper implements RowMapper<User> {
 
-    /**
-     * Получаем User из строки базы данных
-     */
     @Override
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         User user = new User();
