@@ -322,14 +322,21 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getRecommendations(long userId) {
         String sql = "SELECT F.ID, F.NAME, MPA.ID, MPA.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION " +
+                //отбираем все фильмы, которые лайкнул текущий пользователь
                 "FROM LIKES AS L1 " +
+                //присоединяем других пользователей, лайкнувших такие же фильмы
                 "JOIN LIKES AS L2 ON L2.FILM_ID = L1.FILM_ID AND L1.USER_ID = ? " +
-                "JOIN LIKES AS L3 ON L3.USER_ID = L2.USER_ID AND L3.USER_ID != ? AND L3.FILM_ID != L1.FILM_ID " +
+                //присоединяем все фильмы, которые лайнули другие пользователи и не лайкнул текущий
+                "JOIN LIKES AS L3 ON L3.USER_ID = L2.USER_ID AND L3.USER_ID != ? " +
+                "AND L3.FILM_ID NOT IN (SELECT FILM_ID FROM LIKES WHERE USER_ID = ?) " +
+                //обогащаем информацию о фильмах и их жанрах
                 "JOIN FILMS AS F ON F.ID = L3.FILM_ID " +
                 "JOIN MPA ON F.MPA_ID = MPA.ID " +
-                "GROUP BY L3.FILM_ID ORDER BY COUNT(*) DESC LIMIT ?";
+                //вверху списка выводим фильм, набравший больше всего лайков других пользователей, с учётом их "весов"
+                //"вес" лайка другого пользователя равен числу совпадений по лайкам этого пользователя с текущим
+                "GROUP BY L3.FILM_ID ORDER BY COUNT(*) DESC";
 
         return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
-                likesDbStorage, directorDbStorage), userId, userId, 5);
+                likesDbStorage, directorDbStorage), userId, userId, userId);
     }
 }
