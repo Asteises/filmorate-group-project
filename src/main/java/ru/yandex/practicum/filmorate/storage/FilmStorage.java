@@ -39,9 +39,9 @@ public interface FilmStorage {
 
     List<Film> getPopularByGenre(int genreId);
 
-    List<Film> getPopularFilmsByYear(String year);
+    List<Film> getPopularFilmsByYear(int year);
 
-    List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, String year);
+    List<Film> getPopularFilmsByGenreAndYear(int count, int genreId, int year);
 
     Collection<Film> getCommonFilms(int userId, int friendId);
 

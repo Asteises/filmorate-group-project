@@ -39,10 +39,10 @@ public class FilmService {
         filmStorage.deleteFilm(filmId);
     }
 
-    public List<Film> getPopularFilms(int count, int genreId, String year) {
-        if (genreId == 0 && year == null) {
+    public List<Film> getPopularFilms(int count, int genreId, int year) {
+        if (genreId == 0 && year == 0) {
             return filmStorage.getPopularFilms(count);
-        } else if (genreId != 0 && year == null) {
+        } else if (genreId != 0 && year == 0) {
             return filmStorage.getPopularByGenre(genreId);
         } else if (genreId == 0){
             return filmStorage.getPopularFilmsByYear(year);
