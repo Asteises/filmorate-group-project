@@ -35,6 +35,7 @@ public class FriendDbStorage implements FriendStorage {
     }
 
     public List<User> getAllFriends(long id) throws UserNotFound {
+        userService.getUserById(id); // Проверяем наличие User
         String sqlFriend = "SELECT * FROM USERS " +
                 "LEFT JOIN FRIENDS ON USERS.ID=FRIENDS.FRIEND_ID " +
                 "WHERE FRIENDS.USER_ID = ?";

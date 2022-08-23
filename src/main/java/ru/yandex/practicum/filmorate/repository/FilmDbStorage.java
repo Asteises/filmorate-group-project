@@ -31,6 +31,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) throws FilmNotFound {
+        film.setRate(0);
         String sql = "INSERT INTO FILMS (" +
                 "NAME, " +
                 "MPA_ID, " +
@@ -61,9 +62,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
-        String sql1 = "SELECT * " +
-                "FROM FILMS JOIN MPA ON FILMS.MPA_ID=MPA.ID";
-        String sql = "SELECT * FROM FILMS";
+        String sql1 = "SELECT * FROM FILMS " +
+                "JOIN MPA ON FILMS.MPA_ID=MPA.ID";
         return jdbcTemplate.query(sql1, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage));
     }
 
@@ -73,9 +73,10 @@ public class FilmDbStorage implements FilmStorage {
             String sql = "SELECT * FROM FILMS " +
                     "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
                     "WHERE FILMS.ID = ?";
-            return jdbcTemplate.queryForObject(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage), id);
+            return jdbcTemplate.queryForObject(sql, new FilmRowMapper(genreDbStorage,
+                    mpaDbStorage, likesDbStorage), id);
         } catch (EmptyResultDataAccessException e) {
-            throw new FilmNotFound("");
+            throw new FilmNotFound("Неверный id фильма.");
         }
     }
 
@@ -104,18 +105,28 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void deleteFilm(long filmId) throws FilmNotFound {
-        String sql = "DELETE FROM FILMS WHERE ID = ?";
-        jdbcTemplate.update(sql, filmId);
+        try {
+            String sql = "DELETE FROM FILMS WHERE ID = ?";
+            String sqlGenre = "DELETE FROM FILMS_GENRES WHERE FILM_ID = ?";
+            String sqlLike = "DELETE FROM LIKES WHERE FILM_ID = ?";
+            jdbcTemplate.update(sqlGenre, filmId);
+            jdbcTemplate.update(sqlLike, filmId);
+            jdbcTemplate.update(sql, filmId);
+        } catch (IllegalArgumentException e) {
+            throw new FilmNotFound("Неверный id фильма.");
+        }
     }
 
     public List<Film> getPopularFilms(int count) {
         String sql = "SELECT TOP ? * FROM FILMS " +
                 "JOIN MPA ON FILMS.MPA_ID=MPA.ID " +
-                "LEFT JOIN LIKES l ON FILMS.ID = l.FILM_ID " +
-                "GROUP BY FILMS.ID " +
+                "LEFT JOIN LIKES L ON FILMS.ID = L.FILM_ID " +
+                "GROUP BY FILMS.ID, " +
+                "L.USER_ID " +
                 "ORDER BY COUNT(USER_ID) DESC";
         if (count != 0) {
-            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage), count);
+            return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage,
+                    likesDbStorage), count);
         } else {
             return jdbcTemplate.query(sql, new FilmRowMapper(genreDbStorage, mpaDbStorage, likesDbStorage), 10);
         }

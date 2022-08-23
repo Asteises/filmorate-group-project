@@ -35,68 +35,66 @@ public class UserController {
      * Получаем всех User
      */
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     /**
      * Получаем User по id
      */
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable long id) throws UserNotFound {
-        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+    public User getUserById(@PathVariable long id) throws UserNotFound {
+        return userService.getUserById(id);
     }
 
     /**
      * Изменяем существующего User
      */
     @PutMapping
-    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) throws UserNotFound {
-        userService.updateUser(user);
-        return ResponseEntity.ok(user);
+    public User updateUser(@Valid @RequestBody User user) throws UserNotFound {
+        return userService.updateUser(user);
     }
 
     /**
      * Удаляем User по id
      */
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable long userId) throws UserNotFound {
+    public void deleteUser(@PathVariable long userId) throws UserNotFound {
         userService.deleteUser(userId);
-        return ResponseEntity.ok("");
     }
 
     /**
      * Добавляем User в друзья к другому User
      */
     @PutMapping("/{id}/friends/{friendId}")
-    public ResponseEntity<User> addFriend(@PathVariable long id, @PathVariable long friendId) throws UserNotFound {
+    public User addFriend(@PathVariable long id, @PathVariable long friendId) throws UserNotFound {
         friendService.addFriend(id, friendId);
-        return ResponseEntity.ok(userService.getUserById(id));
+        return userService.getUserById(id);
     }
 
     /**
      * Удаляем User из друзей другого User
      */
     @DeleteMapping("/{id}/friends/{friendId}")
-    public ResponseEntity<String> deleteFriend(@PathVariable long id, @PathVariable long friendId) throws UserNotFound {
+    public void deleteFriend(@PathVariable long id, @PathVariable long friendId) throws UserNotFound {
         friendService.deleteFriend(friendId, id);
-        return ResponseEntity.ok("Friend has been deleted");
     }
 
     /**
      * Получаем всех друзей User по id
      */
     @GetMapping("/{id}/friends")
-    public ResponseEntity<List<User>> getAllFriends(@PathVariable long id) throws UserNotFound {
-        return new ResponseEntity<>(friendService.getAllFriends(id), HttpStatus.OK);
+    public List<User> getAllFriends(@PathVariable long id) throws UserNotFound {
+        return friendService.getAllFriends(id);
     }
 
     /**
      * Получаем всех общих друзей двух User
      */
     @GetMapping("/{userId}/friends/common/{friendId}")
-    public ResponseEntity<List<User>> getAllCommonFriends(@PathVariable long userId, @PathVariable long friendId) throws UserNotFound {
-        return new ResponseEntity<>(friendService.getAllCommonFriends(userId, friendId), HttpStatus.OK);
+    public List<User> getAllCommonFriends(@PathVariable long userId, @PathVariable long friendId) throws UserNotFound {
+        return friendService.getAllCommonFriends(userId, friendId);
     }
+
 
 }

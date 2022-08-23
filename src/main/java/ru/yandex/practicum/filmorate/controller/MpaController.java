@@ -24,16 +24,15 @@ public class MpaController {
      * Получаем Mpa по id
      */
     @GetMapping("{id}")
-    public ResponseEntity<Mpa> getMpaById(@PathVariable int id) {
-        Mpa mpa = mpaService.getMpaById(id);
-        return ResponseEntity.ok(mpa);
+    public Mpa getMpaById(@PathVariable int id) {
+        return mpaService.getMpaById(id);
     }
 
     /**
      * Получаем все Mpa
      */
     @GetMapping
-    public ResponseEntity<List<Mpa>> getAllMpa() {
-        return ResponseEntity.ok(mpaService.getAllMpa());
+    public List<Mpa> getAllMpa() {
+        return mpaService.getAllMpa();
     }
 }

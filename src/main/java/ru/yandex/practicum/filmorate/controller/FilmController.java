@@ -37,76 +37,73 @@ public class FilmController {
      * Получаем все Film
      */
     @GetMapping
-    public ResponseEntity<List<Film>> getAllFilms() {
-        return new ResponseEntity<>(filmService.getAllFilms(), HttpStatus.OK);
+    public List<Film> getAllFilms() {
+        return filmService.getAllFilms();
     }
 
     /**
      * Получаем Film по id
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Film> getFilmById(@PathVariable long id) throws FilmNotFound {
-        return new ResponseEntity<>(filmService.getFilmById(id), HttpStatus.OK);
+    public Film getFilmById(@PathVariable long id) throws FilmNotFound {
+        return filmService.getFilmById(id);
     }
 
     /**
      * Изменяем существующий Film
      */
     @PutMapping
-    public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) throws FilmNotFound {
-        return ResponseEntity.ok(filmService.updateFilm(film));
+    public Film updateFilm(@Valid @RequestBody Film film) throws FilmNotFound {
+        return filmService.updateFilm(film);
     }
 
     /**
      * Удаляем Film по id
      */
     @DeleteMapping("/{filmId}")
-    public ResponseEntity<String> deleteFilm(@PathVariable long filmId) throws FilmNotFound {
+    public void deleteFilm(@PathVariable long filmId) throws FilmNotFound {
         filmService.deleteFilm(filmId);
-        return ResponseEntity.ok("Film delete");
     }
 
     /**
      * Получаем Film по популярности(количеству like)
      */
     @GetMapping("/popular")
-    public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(defaultValue = "0") int count) {
-        return ResponseEntity.ok(filmService.getPopularFilms(count));
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "0") int count) {
+        return filmService.getPopularFilms(count);
     }
 
     /**
      * Добавляем Genre в Film
      */
     @PostMapping("{id}/genres/set/")
-    public ResponseEntity<String> setGenres(@PathVariable long id, @RequestBody List<Genre> genres) throws FilmNotFound {
+    public void setGenres(@PathVariable long id, @RequestBody List<Genre> genres) throws FilmNotFound {
         filmService.setFilmGenres(id, genres);
-        return ResponseEntity.ok("Genres успешно добавлены");
     }
 
     /**
      * Получаем все Genre у Film
      */
     @GetMapping("{id}/genres/")
-    public ResponseEntity<List<Genre>> getFilmGenres(@PathVariable long id) throws FilmNotFound {
-        return ResponseEntity.ok(filmService.getFilmGenres(id));
+    public List<Genre> getFilmGenres(@PathVariable long id) throws FilmNotFound {
+        return filmService.getFilmGenres(id);
     }
 
     /**
      * Добавляем like к Film
      */
     @PutMapping("/{filmId}/like/{userId}")
-    public ResponseEntity<String> addLike(@PathVariable long userId, @PathVariable long filmId) throws UserNotFound, FilmNotFound {
+    public void addLike(@PathVariable long userId, @PathVariable long filmId) throws UserNotFound, FilmNotFound {
         likesService.addLikeToFilm(userId, filmId);
-        return ResponseEntity.ok("Лайк добавлен");
     }
 
     /**
      * Удаляем like у Film
      */
     @DeleteMapping("/{filmId}/like/{userId}")
-    public ResponseEntity<String> deleteLikeFromFilm(@PathVariable long filmId, @PathVariable long userId) throws UserNotFound, FilmNotFound {
+    public void deleteLikeFromFilm(@PathVariable long filmId,
+                                   @PathVariable long userId) throws UserNotFound, FilmNotFound {
         likesService.deleteLikeFromFilm(filmId, userId);
-        return ResponseEntity.ok("Like delete");
     }
 
 }
